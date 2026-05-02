@@ -220,16 +220,61 @@ function normalizeText(value) {
     .trim();
 }
 
-function getProvider(proxy) {
-  const fromProxy =
-    proxy.provider ||
-    proxy.subName ||
-    proxy.collectionName ||
-    proxy.subscription ||
-    proxy.source ||
-    "";
+const PROVIDER_KEYS = [
+  "provider",
+  "providerName",
+  "subName",
+  "_subName",
+  "subscription",
+  "subscriptionName",
+  "_subscription",
+  "_subscriptionName",
+  "collectionName",
+  "_collectionName",
+  "source",
+  "sourceName",
+  "_source",
+  "_sourceName",
+  "origin",
+  "originName",
+  "_origin",
+  "_originName",
+];
+
+const PROVIDER_OBJECT_KEYS = ["name", "displayName", "label", "title", "remark", "remarks"];
+
+function pickString(value) {
+  if (typeof value === "string" && value.trim()) return value.trim();
+  if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  return "";
+}
+
+function pickProviderFromObject(object) {
+  if (!object || typeof object !== "object") return "";
+
+  for (let i = 0; i < PROVIDER_KEYS.length; i++) {
+    const value = object[PROVIDER_KEYS[i]];
+    const direct = pickString(value);
+    if (direct) return direct;
+
+    if (value && typeof value === "object") {
+      for (let j = 0; j < PROVIDER_OBJECT_KEYS.length; j++) {
+        const nested = pickString(value[PROVIDER_OBJECT_KEYS[j]]);
+        if (nested) return nested;
+      }
+    }
+  }
+
+  return "";
+}
+
+function getProvider(proxy, runtimeContext) {
+  const fromProxy = pickProviderFromObject(proxy);
 
   if (fromProxy) return String(fromProxy);
+
+  const fromContext = pickProviderFromObject(runtimeContext);
+  if (fromContext) return String(fromContext);
 
   return getArg("provider", "") || getArg("name", "");
 }
@@ -299,8 +344,8 @@ function setBlockQuic(proxy) {
   }
 }
 
-function buildBaseName(proxy, country, tags) {
-  const provider = getProvider(proxy);
+function buildBaseName(proxy, country, tags, runtimeContext) {
+  const provider = getProvider(proxy, runtimeContext);
   const mode = normalizeOutputMode(getArg("out", "cn"));
   const withFlag = hasArg("flag");
   const sep = getArg("sep", " ");
@@ -327,7 +372,7 @@ function removeSingleSequence(proxies, separator) {
   });
 }
 
-function operator(proxies) {
+function operator(proxies, targetPlatform, runtimeContext) {
   const separator = getArg("sn", " ");
   const keepUnknown = hasArg("keepUnknown") || hasArg("nm");
   const shouldClear = hasArg("clear");
@@ -345,7 +390,7 @@ function operator(proxies) {
     if (!country && !keepUnknown) return;
 
     const tags = collectTags(cleanName);
-    const baseName = country ? buildBaseName(proxy, country, tags) : [getProvider(proxy), cleanName].filter(Boolean).join(getArg("sep", " "));
+    const baseName = country ? buildBaseName(proxy, country, tags, runtimeContext) : [getProvider(proxy, runtimeContext), cleanName].filter(Boolean).join(getArg("sep", " "));
     counters[baseName] = (counters[baseName] || 0) + 1;
 
     proxy.name = baseName + separator + String(counters[baseName]).padStart(2, "0");

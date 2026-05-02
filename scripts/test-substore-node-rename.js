@@ -19,6 +19,8 @@ const input = [
   { name: "香港 IPLC 01 GPT", type: "ss", subName: "TAG" },
   { name: "HK IPLC 02 Netflix", type: "ss", subName: "TAG" },
   { name: "日本 东京 2x", type: "trojan", provider: "Nexitally" },
+  { name: "Singapore IPLC", type: "ss", subscription: { name: "FlowerCloud" } },
+  { name: "Taiwan IEPL", type: "ss", _subName: "DlerCloud" },
   { name: "United States Los Angeles 原生", type: "vmess" },
   { name: "剩余流量 100G", type: "ss" },
 ];
@@ -26,10 +28,12 @@ const input = [
 const output = operator(input);
 const names = output.map((proxy) => proxy.name);
 
-assert(output.length === 4, "traffic notice node is filtered");
+assert(output.length === 6, "traffic notice node is filtered");
 assert(names.includes("TAG 🇭🇰 香港 IPLC GPT"), "Chinese Hong Kong node keeps provider, flag, IPLC, and GPT");
 assert(names.includes("TAG 🇭🇰 香港 IPLC NF"), "English Hong Kong node keeps provider, flag, IPLC, and NF");
 assert(names.includes("Nexitally 🇯🇵 日本 2x"), "Japan node uses its own subscription provider, flag, and rate");
+assert(names.includes("FlowerCloud 🇸🇬 新加坡 IPLC"), "Singapore node uses nested subscription name");
+assert(names.includes("DlerCloud 🇹🇼 台湾 IEPL"), "Taiwan node uses underscored subscription name");
 assert(names.includes("TAG 🇺🇸 美国 原生"), "United States node falls back to provider argument");
 assert(output.every((proxy) => proxy["block-quic"] === "off"), "block-quic is set");
 
