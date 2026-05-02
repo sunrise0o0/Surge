@@ -221,6 +221,17 @@ function normalizeText(value) {
 }
 
 const PROVIDER_KEYS = [
+  "_subDisplayName",
+  "subDisplayName",
+  "_subscriptionDisplayName",
+  "subscriptionDisplayName",
+  "_collectionDisplayName",
+  "collectionDisplayName",
+  "_sourceDisplayName",
+  "sourceDisplayName",
+  "_originDisplayName",
+  "originDisplayName",
+  "providerDisplayName",
   "provider",
   "providerName",
   "subName",
