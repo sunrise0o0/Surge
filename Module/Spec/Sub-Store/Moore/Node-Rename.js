@@ -187,7 +187,8 @@ const DEFAULT_KEEP = [
   [/倍率\s*[:：]?\s*(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(?:x|X|×|倍)/i, null],
 ];
 
-const DROP_RE = /(套餐|到期|有效|剩余|剩餘|流量|官网|官網|网址|網址|客服|工单|工單|邮箱|郵箱|订阅|訂閱|公告|通知|Traffic|Expire|Expired|Remain|Used|Total|Official|Website|Support|Email)/i;
+const INFO_RE = /(套餐|到期|有效|剩余|剩餘|流量|Traffic|Expire|Expired|Remain|Remaining|Used|Total)/i;
+const DROP_RE = /(官网|官網|网址|網址|客服|工单|工單|邮箱|郵箱|订阅|訂閱|公告|通知|Official|Website|Support|Email|Notice)/i;
 
 function getArg(name, fallback) {
   return ARG[name] === undefined || ARG[name] === "" ? fallback : decodeValue(ARG[name]);
@@ -215,7 +216,7 @@ function normalizeOutputMode(value) {
 
 function normalizeText(value) {
   return String(value || "")
-    .replace(/[|｜·・_/\\[\](){}【】「」『』"'`~!@#$%^&*=+<>?，。；：、]/g, " ")
+    .replace(/[|｜·・_/\\[\](){}【】「」『』"'`~!@#$%^&*=+<>?，。；：:、]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -370,6 +371,12 @@ function buildBaseName(proxy, country, tags, runtimeContext) {
   return parts.join(sep);
 }
 
+function buildInfoName(proxy, cleanName, runtimeContext) {
+  const provider = getProvider(proxy, runtimeContext);
+  const sep = getArg("sep", " ");
+  return [provider, cleanName].filter(Boolean).join(sep);
+}
+
 function removeSingleSequence(proxies, separator) {
   const counts = {};
   proxies.forEach((proxy) => {
@@ -394,8 +401,23 @@ function operator(proxies, targetPlatform, runtimeContext) {
   proxies.forEach((proxy, index) => {
     const originalName = String(proxy.name || "");
     const cleanName = normalizeText(originalName);
+    const provider = getProvider(proxy, runtimeContext);
 
     if (shouldClear && DROP_RE.test(cleanName)) return;
+
+    if (INFO_RE.test(cleanName)) {
+      proxy.name = buildInfoName(proxy, cleanName, runtimeContext);
+      proxy._rsSort = {
+        type: 0,
+        provider: provider,
+        country: -1,
+        base: proxy.name,
+        index: index,
+      };
+      setBlockQuic(proxy);
+      output.push(proxy);
+      return;
+    }
 
     const country = detectCountry(cleanName);
     if (!country && !keepUnknown) return;
@@ -406,6 +428,8 @@ function operator(proxies, targetPlatform, runtimeContext) {
 
     proxy.name = baseName + separator + String(counters[baseName]).padStart(2, "0");
     proxy._rsSort = {
+      type: 1,
+      provider: provider,
       country: country ? COUNTRIES.indexOf(country) : 999,
       base: baseName,
       index: index,
@@ -420,6 +444,8 @@ function operator(proxies, targetPlatform, runtimeContext) {
 
   if (shouldSort) {
     output.sort((a, b) => {
+      if (a._rsSort.type !== b._rsSort.type) return a._rsSort.type - b._rsSort.type;
+      if (a._rsSort.provider !== b._rsSort.provider) return a._rsSort.provider.localeCompare(b._rsSort.provider);
       if (a._rsSort.country !== b._rsSort.country) return a._rsSort.country - b._rsSort.country;
       if (a._rsSort.base !== b._rsSort.base) return a._rsSort.base.localeCompare(b._rsSort.base);
       return a._rsSort.index - b._rsSort.index;
