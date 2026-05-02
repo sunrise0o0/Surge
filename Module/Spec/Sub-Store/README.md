@@ -30,7 +30,7 @@
 
 > https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store/Moore/Node-Rename.js#provider=TAG&flag&one&keep=GPT+NF+IPLC&blockquic=off
 
-该脚本适合放在 Sub-Store 的“脚本操作”里，用于整理机场订阅节点名。它会识别国家/地区、统一输出命名、补国旗、保留倍率或专线标记，并可统一处理 `block-quic`。整理后的节点名默认由“服务商名称 + 地区 + 保留标记 + 序号”组成，例如：
+该脚本适合放在 Sub-Store 的“脚本操作”里，用于整理机场订阅节点名。它会识别国家/地区、统一输出命名、补国旗、保留倍率或专线标记，并可统一处理 `block-quic`。多订阅合并时会优先使用每个节点自带的订阅名称作为前缀；只有节点取不到订阅名称时，才使用 `provider=` / `name=` 参数作为兜底。整理后的节点名默认由“订阅名称 + 地区 + 保留标记 + 序号”组成，例如：
 
 ```text
 TAG 🇭🇰 香港 IPLC GPT 01
@@ -56,7 +56,7 @@ https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store
 
 | 参数 | 作用 |
 | --- | --- |
-| `provider=TAG` | 给所有节点名前添加服务商名称，推荐必填 |
+| `provider=TAG` | 兜底服务商名称；节点自带订阅名称存在时优先使用订阅名称 |
 | `name=TAG` | `provider=` 的别名 |
 | `out=zh/en/flag/quan` | 指定输出国家/地区格式，默认中文 |
 | `flag` | 给节点名前添加国旗 |

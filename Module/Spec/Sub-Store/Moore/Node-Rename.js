@@ -8,7 +8,7 @@
  *   Node-Rename.js#provider=TAG&flag&one&keep=gpt+nf+iplc&blockquic=off
  *
  * Arguments:
- *   provider/name  Service provider prefix.
+ *   provider/name  Fallback provider prefix when a node has no subscription name.
  *   out            cn/zh, en, flag, quan. Default: cn.
  *   flag           Prefix country flag before country name.
  *   one            Remove sequence number when a region has only one node.
@@ -221,17 +221,17 @@ function normalizeText(value) {
 }
 
 function getProvider(proxy) {
-  const fromArg = getArg("provider", "") || getArg("name", "");
-  if (fromArg) return fromArg;
-
-  return (
+  const fromProxy =
     proxy.provider ||
     proxy.subName ||
     proxy.collectionName ||
     proxy.subscription ||
     proxy.source ||
-    ""
-  );
+    "";
+
+  if (fromProxy) return String(fromProxy);
+
+  return getArg("provider", "") || getArg("name", "");
 }
 
 function detectCountry(name) {
