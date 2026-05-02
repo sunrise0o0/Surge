@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Rabbit-Spec/Surge/blob/main/Rules/sources.schema.json",
+  "title": "Rabbit-Spec Surge rule source manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "generatedBy",
+    "repository",
+    "manualSection",
+    "rules"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "integer",
+      "const": 1
+    },
+    "generatedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "manualSection": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target",
+          "displayName",
+          "type",
+          "upstream",
+          "license",
+          "sources"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+\\.list$"
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "domain",
+              "ip",
+              "mixed"
+            ]
+          },
+          "upstream": {
+            "type": "string",
+            "minLength": 1
+          },
+          "license": {
+            "type": "string",
+            "minLength": 1
+          },
+          "outputs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "domainSet": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._/-]+\\.(conf|list)$"
+              },
+              "nonIp": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._/-]+\\.list$"
+              },
+              "ip": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._/-]+\\.list$"
+              }
+            }
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "section",
+                "url"
+              ],
+              "properties": {
+                "section": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "url": {
+                  "type": "string",
+                  "pattern": "^https://"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

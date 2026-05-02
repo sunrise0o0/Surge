@@ -1,0 +1,269 @@
+{
+  "$schema": "./sources.schema.json",
+  "schema": 1,
+  "generatedBy": "scripts/update-rules.ps1",
+  "repository": "https://github.com/Rabbit-Spec/Surge",
+  "manualSection": "手动维护规则",
+  "rules": [
+    {
+      "target": "ChinaCIDR.list",
+      "displayName": "深巷有喵的「ChinaCIDR」规则",
+      "type": "ip",
+      "upstream": "Loyalsoldier/surge-rules",
+      "license": "GPL-3.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/ruleset/cncidr.txt"
+        }
+      ]
+    },
+    {
+      "target": "AIGC.list",
+      "displayName": "深巷有喵的「AIGC」规则",
+      "type": "mixed",
+      "upstream": "EAlyce/conf",
+      "license": "See upstream repository",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/EAlyce/conf/refs/heads/main/Rule/OpenAI.list"
+        }
+      ]
+    },
+    {
+      "target": "ChinaASN.list",
+      "displayName": "深巷有喵的「ChinaASN」规则",
+      "type": "ip",
+      "upstream": "VirgilClyne/GetSomeFries",
+      "license": "GPL-3.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/main/ruleset/ASN.China.list"
+        }
+      ]
+    },
+    {
+      "target": "TelegramASN.list",
+      "displayName": "深巷有喵的「TelegramASN」规则",
+      "type": "mixed",
+      "upstream": "VirgilClyne/GetSomeFries",
+      "license": "GPL-3.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/refs/heads/main/ruleset/ASN.Telegram.list"
+        }
+      ]
+    },
+    {
+      "target": "China.list",
+      "displayName": "深巷有喵的「China」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "outputs": {
+        "domainSet": "DomainSet/China.conf",
+        "nonIp": "NonIP/China.list",
+        "ip": "IP/China.list"
+      },
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/China/China_All_No_Resolve.list"
+        }
+      ]
+    },
+    {
+      "target": "Apple.list",
+      "displayName": "深巷有喵的「Apple」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple_All_No_Resolve.list"
+        }
+      ]
+    },
+    {
+      "target": "Google.list",
+      "displayName": "深巷有喵的「Google」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list"
+        }
+      ]
+    },
+    {
+      "target": "Microsoft.list",
+      "displayName": "深巷有喵的「Microsoft」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Microsoft/Microsoft.list"
+        }
+      ]
+    },
+    {
+      "target": "YouTube.list",
+      "displayName": "深巷有喵的「YouTube」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/YouTube/YouTube.list"
+        }
+      ]
+    },
+    {
+      "target": "Netflix.list",
+      "displayName": "深巷有喵的「Netflix」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Netflix/Netflix.list"
+        }
+      ]
+    },
+    {
+      "target": "Disney.list",
+      "displayName": "深巷有喵的「Disney」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Disney/Disney.list"
+        }
+      ]
+    },
+    {
+      "target": "Spotify.list",
+      "displayName": "深巷有喵的「Spotify」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Spotify/Spotify.list"
+        }
+      ]
+    },
+    {
+      "target": "TikTok.list",
+      "displayName": "深巷有喵的「TikTok」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/TikTok/TikTok.list"
+        }
+      ]
+    },
+    {
+      "target": "BiliBili.list",
+      "displayName": "深巷有喵的「BiliBili」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/BiliBili/BiliBili.list"
+        }
+      ]
+    },
+    {
+      "target": "ChinaMedia.list",
+      "displayName": "深巷有喵的「ChinaMedia」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/ChinaMedia/ChinaMedia.list"
+        }
+      ]
+    },
+    {
+      "target": "GlobalMedia.list",
+      "displayName": "深巷有喵的「GlobalMedia」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "上游同步规则",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GlobalMedia/GlobalMedia_All_No_Resolve.list"
+        }
+      ]
+    },
+    {
+      "target": "Proxy.list",
+      "displayName": "深巷有喵的「Proxy」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "outputs": {
+        "domainSet": "DomainSet/Proxy.conf",
+        "nonIp": "NonIP/Proxy.list",
+        "ip": "IP/Proxy.list"
+      },
+      "sources": [
+        {
+          "section": "GitHub",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GitHub/GitHub.list"
+        },
+        {
+          "section": "Proxy",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Surge/Proxy/Proxy_All_No_Resolve.list"
+        }
+      ]
+    },
+    {
+      "target": "Game.list",
+      "displayName": "深巷有喵的「Game」规则",
+      "type": "mixed",
+      "upstream": "blackmatrix7/ios_rule_script",
+      "license": "GPL-2.0",
+      "sources": [
+        {
+          "section": "Epic",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Surge/Epic/Epic.list"
+        },
+        {
+          "section": "Sony",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Surge/Sony/Sony.list"
+        },
+        {
+          "section": "Steam",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Surge/Steam/Steam.list"
+        },
+        {
+          "section": "Nintendo",
+          "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Surge/Nintendo/Nintendo.list"
+        }
+      ]
+    }
+  ]
+}

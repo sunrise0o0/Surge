@@ -1,8 +1,10 @@
 # NAME: 深巷有喵的「ChinaMedia」规则
 # AUTHOR: Rabbit-Spec
 # REPO: https://github.com/Rabbit-Spec/Surge
-# UPDATED: 2026.05.01 05:08:20
-# TOTAL: 446
+# UPDATED: 2026.05.03 01:46:19
+# TOTAL: 443
+# SOURCE: Rules/sources.json
+# GENERATED-BY: scripts/update-rules.ps1
 
 # ======= 上游同步规则 ========
 DOMAIN,0gr4uqmtt8y41hcjsgrzdrc31.ourdvsss.com
@@ -437,14 +439,11 @@ USER-AGENT,TencentMidasConnect*
 USER-AGENT,YYeTs*
 USER-AGENT,Youku*
 USER-AGENT,baiduyinyue
-USER-AGENT,bilibili*
 USER-AGENT,iQiYi*
-USER-AGENT,iQiyi*
 USER-AGENT,live4iphone*
 USER-AGENT,qqlive4iphone*
 USER-AGENT,walkman*
 USER-AGENT,xiami*
-USER-AGENT,youku*
 PROCESS-NAME,com.bilibili.app.blue
 PROCESS-NAME,com.bilibili.app.in
 PROCESS-NAME,com.bilibili.comic

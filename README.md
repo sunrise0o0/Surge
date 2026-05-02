@@ -9,6 +9,16 @@
 ### 配置链接
 > **稳定版 :** https://github.com/Rabbit-Spec/Surge/tree/Master/Conf<br>
 
+### 配置选择
+| 配置 | 适合场景 | 特点 |
+| --- | --- | --- |
+| `Conf/Spec/Surge.conf` | 日常主力使用 | 策略组完整，流媒体、AI、Apple、Microsoft、游戏等服务拆分较细 |
+| `Conf/Spec/Sunrise-Surge.conf` | 多机场 / Sub-Store 用户 | 使用更完整的地区 Smart Group，适合节点较多的订阅 |
+| `Conf/Spec/Surge-Lite-CN.conf` | 中文轻量用户 | 保留核心服务分流，策略组数量较少 |
+| `Conf/Spec/Surge-Mini.conf` | 极简用户 | 只保留 AIGC、Apple、媒体、Proxy、China 等核心规则 |
+| `Conf/Spec/Surge-EN.conf` / `Surge-Lite-EN.conf` | 英文命名用户 | 策略组使用英文命名，便于跨语言环境维护 |
+| `Conf/Spec/Surge-Developer.conf` | 开发调试 | 规则极简，适合临时调试网络行为 |
+
 ### 模块链接
 > **稳定版 :** https://github.com/Rabbit-Spec/Surge/tree/Master/Module<br>
 
@@ -73,5 +83,74 @@
 - [@blackmatrix7](https://github.com/blackmatrix7)
 ### 解锁完整的Apple功能和集成服务维护者
 - [@VirgilClyne](https://github.com/VirgilClyne)
+
+### 规则与来源治理
+- [规则集维护准则](./Rules/README.md)
+- [来源与许可证说明](./CREDITS.md)
+- [升级规划文档](./docs/README.md)
+
+### 规则自动化状态
+- 规则来源由 `Rules/sources.json` 管理，并由 GitHub Actions 每日同步。
+- 生成脚本会合并 `Rules/Manual/*.txt`，应用 `Rules/Manual/*.exclude.txt`，按顺序去重，并为 IP / ASN 规则补齐 `no-resolve`。
+- v3.0 起，CI 会额外检查配置中的 `FINAL` 位置、策略组引用、规则统计、重复规则和高风险上游变更。
+- `Rules/DomainSet/`、`Rules/NonIP/`、`Rules/IP/` 是试点分层输出；旧 `Rules/*.list` 链接仍保留，避免影响已有订阅。
+
+### 规则说明与使用方法
+
+`Rules/` 目录里的规则可以被 Surge 直接引用。默认推荐继续使用根目录下的 `Rules/*.list`，兼容性最好，也和本仓库主配置保持一致。
+
+常用规则：
+
+| 规则 | 用途 | 推荐策略 |
+| --- | --- | --- |
+| `AIGC.list` | OpenAI、Claude、Cursor、Gemini 等 AI 服务 | AI / 智能助理策略组 |
+| `Apple.list` | Apple 服务 | 直连或 Apple 专用策略组 |
+| `Microsoft.list` | Microsoft / GitHub 相关服务 | 直连或 Microsoft 专用策略组 |
+| `TelegramASN.list` | Telegram ASN / 域名兜底 | Telegram 专用策略组 |
+| `YouTube.list`、`Netflix.list`、`Disney.list` | 细分流媒体 | 对应流媒体策略组 |
+| `GlobalMedia.list` | 国外媒体大包 | 国外媒体策略组 |
+| `Proxy.list` | 常见代理域名大包 | 默认代理策略组 |
+| `China.list`、`ChinaCIDR.list`、`ChinaASN.list` | 国内域名、CIDR、ASN | `DIRECT` / 全球直连 |
+
+在 Surge 配置的 `[Rule]` 里这样引用：
+
+```ini
+RULE-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/AIGC.list,📟 智能助理
+RULE-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/Proxy.list,✈️ 节点选择
+RULE-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/China.list,🌐 全球直连
+RULE-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/ChinaCIDR.list,🌐 全球直连
+FINAL,✈️ 节点选择,dns-failed
+```
+
+规则顺序建议：
+
+1. 需要独立策略组的服务，例如 AIGC、Apple、Microsoft、Telegram、游戏。
+2. 细分流媒体，例如 YouTube、Netflix、Disney、BiliBili。
+3. `GlobalMedia.list`、`Proxy.list` 这类大范围规则。
+4. `China.list`、`LAN`、`ChinaCIDR.list` 这类直连兜底。
+5. `FINAL` 放最后。
+
+进阶分层规则目前是试点输出，适合想减少大规则集开销或调试规则命中的用户：
+
+```ini
+DOMAIN-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/DomainSet/Proxy.conf,✈️ 节点选择
+RULE-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/NonIP/Proxy.list,✈️ 节点选择
+RULE-SET,https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/IP/Proxy.list,✈️ 节点选择,no-resolve
+```
+
+手工维护规则时不要直接改生成后的 `Rules/*.list`：
+
+- 新增固定补丁：写到 `Rules/Manual/规则名.txt`
+- 排除上游误伤：写到 `Rules/Manual/规则名.exclude.txt`
+- 新增上游来源：改 `Rules/sources.json`
+
+本地更新和检查：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-rules.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\check-rule-sources.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\update-rules.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\validate-rules.ps1 -StrictDuplicates
+```
 
 ### (排名不分先后，如有遗漏万分抱歉，请联系我加上）
