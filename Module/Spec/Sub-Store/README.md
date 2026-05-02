@@ -24,6 +24,55 @@
 5. 可以把 Sub-Store 添加到主屏幕，即可获得类似于 APP 的使用体验。
 6. 更详细的使用指南请参考[文档](https://www.notion.so/Sub-Store-6259586994d34c11a4ced5c406264b46)。
 
+## 节点整理脚本
+
+本项目内置自研 Sub-Store 节点整理脚本：
+
+> https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store/Moore/Node-Rename.js#provider=TAG&flag&one&keep=GPT+NF+IPLC&blockquic=off
+
+该脚本适合放在 Sub-Store 的“脚本操作”里，用于整理机场订阅节点名。它会识别国家/地区、统一输出命名、补国旗、保留倍率或专线标记，并可统一处理 `block-quic`。整理后的节点名默认由“服务商名称 + 地区 + 保留标记 + 序号”组成，例如：
+
+```text
+TAG 🇭🇰 香港 IPLC GPT 01
+TAG 🇯🇵 日本 2x 01
+TAG 🇺🇸 美国 原生 01
+```
+
+常用模板：
+
+```text
+https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store/Moore/Node-Rename.js#provider=TAG&flag&one&keep=GPT+NF+IPLC&blockquic=off
+```
+
+```text
+https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store/Moore/Node-Rename.js#provider=Nexitally&flag&one&clear&blockquic=off
+```
+
+```text
+https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store/Moore/Node-Rename.js#provider=TAG&out=en&flag&keep=GPT+NF+IPLC+IEPL&one
+```
+
+关键参数：
+
+| 参数 | 作用 |
+| --- | --- |
+| `provider=TAG` | 给所有节点名前添加服务商名称，推荐必填 |
+| `name=TAG` | `provider=` 的别名 |
+| `out=zh/en/flag/quan` | 指定输出国家/地区格式，默认中文 |
+| `flag` | 给节点名前添加国旗 |
+| `one` | 同一地区只有一个节点时移除 `01` |
+| `keep=GPT+NF+IPLC` | 额外保留自定义关键词；支持 `GPT>AI` 这种替换写法 |
+| `blkey=GPT+NF+IPLC` | `keep=` 的兼容别名 |
+| `clear` | 清理套餐、到期、剩余流量、官网等非节点信息 |
+| `keepUnknown` | 保留无法识别地区的节点 |
+| `nm` | `keepUnknown` 的兼容别名 |
+| `noSort` | 保持原订阅顺序，不按地区排序 |
+| `sep=空格` | 设置名称片段之间的分隔符，默认空格 |
+| `sn=空格` | 设置序号前的分隔符，默认空格 |
+| `blockquic=on/off` | 批量设置节点的 `block-quic` |
+
+默认会保留这些常见标记：`IPLC`、`IEPL`、`BGP`、`CN2`、`原生`、`商宽`、`Game`、`GPT`、`NF`、`Disney`、`TikTok`、`UDP` 和倍率标记。
+
 ## How to use
 ### 1. 安装环境
 **需要有网络调试工具 Surge ，且要付费至具有面板功能**<br>
