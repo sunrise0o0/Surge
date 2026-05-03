@@ -435,18 +435,17 @@ function formatInfoName(provider, info) {
   return provider + " (" + parts.join(" / ") + ")";
 }
 
-function buildInfoProxy(provider, info, index) {
-  return {
-    name: formatInfoName(provider, info),
-    type: "direct",
-    _rsSort: {
-      type: 0,
-      provider: provider,
-      country: -1,
-      base: provider,
-      index: index,
-    },
+function buildInfoProxy(proxy, provider, info, index) {
+  proxy.name = formatInfoName(provider, info);
+  proxy._rsSort = {
+    type: 0,
+    provider: provider,
+    country: -1,
+    base: proxy.name,
+    index: index,
   };
+  setBlockQuic(proxy);
+  return proxy;
 }
 
 function removeSingleSequence(proxies, separator) {
@@ -483,6 +482,7 @@ function operator(proxies, targetPlatform, runtimeContext) {
       const info = parseInfo(cleanName);
       if (!infoByProvider[provider]) {
         infoByProvider[provider] = {
+          proxy: proxy,
           info: {},
           index: index,
         };
@@ -517,7 +517,7 @@ function operator(proxies, targetPlatform, runtimeContext) {
 
   infoOrder.forEach((provider) => {
     const entry = infoByProvider[provider];
-    output.push(buildInfoProxy(provider, entry.info, entry.index));
+    output.push(buildInfoProxy(entry.proxy, provider, entry.info, entry.index));
   });
 
   if (shouldSort) {
