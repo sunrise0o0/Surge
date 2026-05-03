@@ -38,6 +38,8 @@ const names = output.map((proxy) => proxy.name);
 assert(output.length === 11, "official notice node is filtered and traffic info is aggregated");
 assert(names[0] === "花云 (137.51 GB/150 GB / 到期 2026-05-11)", "huayun traffic and expiry are aggregated");
 assert(names[1] === "良心-共享 (剩余 4.13 TB / 到期 长期有效)", "lx traffic and expiry are aggregated");
+assert(output[0].type === "direct" && output[1].type === "direct", "info summaries are direct nodes");
+assert(!output[0].server && !output[1].server, "info summaries do not keep fake proxy fields");
 assert(names.includes("Bitz 🇭🇰 香港 BGP"), "Bitz node prefers subscription display name");
 assert(names.includes("TAG 🇭🇰 香港 IPLC GPT"), "Chinese Hong Kong node keeps provider, flag, IPLC, and GPT");
 assert(names.includes("TAG 🇭🇰 香港 IPLC NF"), "English Hong Kong node keeps provider, flag, IPLC, and NF");
@@ -47,7 +49,7 @@ assert(names.includes("DlerCloud 🇹🇼 台湾 IEPL"), "Taiwan node uses under
 assert(names.includes("花云 🇭🇰 香港 IEPL"), "huayun node prefers Chinese subscription display name");
 assert(names.includes("良心-共享 🇭🇰 香港 BGP"), "lx node prefers Chinese subscription display name");
 assert(names.includes("TAG 🇺🇸 美国 原生"), "United States node falls back to provider argument");
-assert(output.every((proxy) => proxy["block-quic"] === "off"), "block-quic is set");
+assert(output.filter((proxy) => proxy.type !== "direct").every((proxy) => proxy["block-quic"] === "off"), "block-quic is set for real proxy nodes");
 assert(names.indexOf("DlerCloud 🇹🇼 台湾 IEPL") < names.indexOf("Nexitally 🇯🇵 日本 2x"), "regular nodes are sorted by region after info nodes");
 
 console.log("Sub-Store node rename tests passed.");
