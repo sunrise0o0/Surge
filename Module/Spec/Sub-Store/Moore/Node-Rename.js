@@ -377,6 +377,64 @@ function buildInfoName(proxy, cleanName, runtimeContext) {
   return [provider, cleanName].filter(Boolean).join(sep);
 }
 
+function parseInfo(cleanName) {
+  const info = {};
+  const traffic = cleanName.match(/(?:Traffic|流量|剩余流量)\s*([0-9.]+)\s*([KMGT]B)?(?:\s+|\s*\/\s*|\s*\|\s*)([0-9.]+)?\s*([KMGT]B)?/i);
+  const expire = cleanName.match(/(?:Expire|Expired|到期|套餐到期)\s*([0-9]{4}[-/.][0-9]{1,2}[-/.][0-9]{1,2}|长期有效|永久|無限期|无限期|Unlimited)/i);
+
+  if (traffic) {
+    const first = traffic[1] ? traffic[1] + " " + (traffic[2] || traffic[4] || "").trim() : "";
+    const second = traffic[3] ? traffic[3] + " " + (traffic[4] || traffic[2] || "").trim() : "";
+
+    if (/剩余|剩餘|Remain|Remaining/i.test(cleanName)) {
+      info.remaining = first.trim();
+      if (second) info.total = second.trim();
+    } else {
+      info.used = first.trim();
+      if (second) info.total = second.trim();
+    }
+  }
+
+  if (expire) {
+    info.expire = expire[1].replace(/[/.]/g, "-");
+  }
+
+  return info;
+}
+
+function mergeInfo(target, source) {
+  if (!target.used && source.used) target.used = source.used;
+  if (!target.remaining && source.remaining) target.remaining = source.remaining;
+  if (!target.total && source.total) target.total = source.total;
+  if (!target.expire && source.expire) target.expire = source.expire;
+}
+
+function formatInfoName(provider, info) {
+  const parts = [];
+
+  if (info.used && info.total) {
+    parts.push(info.used + "/" + info.total);
+  } else if (info.remaining && info.total) {
+    parts.push("剩余 " + info.remaining + "/" + info.total);
+  } else if (info.used) {
+    parts.push("已用 " + info.used);
+  } else if (info.remaining) {
+    parts.push("剩余 " + info.remaining);
+  } else if (info.total) {
+    parts.push("总量 " + info.total);
+  }
+
+  if (info.expire) {
+    parts.push("到期 " + info.expire);
+  }
+
+  if (parts.length === 0) {
+    return provider;
+  }
+
+  return provider + " (" + parts.join(" / ") + ")";
+}
+
 function removeSingleSequence(proxies, separator) {
   const counts = {};
   proxies.forEach((proxy) => {
@@ -397,6 +455,8 @@ function operator(proxies, targetPlatform, runtimeContext) {
   const shouldSort = !hasArg("noSort");
   const counters = {};
   const output = [];
+  const infoByProvider = {};
+  const infoOrder = [];
 
   proxies.forEach((proxy, index) => {
     const originalName = String(proxy.name || "");
@@ -406,16 +466,16 @@ function operator(proxies, targetPlatform, runtimeContext) {
     if (shouldClear && DROP_RE.test(cleanName)) return;
 
     if (INFO_RE.test(cleanName)) {
-      proxy.name = buildInfoName(proxy, cleanName, runtimeContext);
-      proxy._rsSort = {
-        type: 0,
-        provider: provider,
-        country: -1,
-        base: proxy.name,
-        index: index,
-      };
-      setBlockQuic(proxy);
-      output.push(proxy);
+      const info = parseInfo(cleanName);
+      if (!infoByProvider[provider]) {
+        infoByProvider[provider] = {
+          proxy: proxy,
+          info: {},
+          index: index,
+        };
+        infoOrder.push(provider);
+      }
+      mergeInfo(infoByProvider[provider].info, info);
       return;
     }
 
@@ -441,6 +501,20 @@ function operator(proxies, targetPlatform, runtimeContext) {
   if (hasArg("one")) {
     removeSingleSequence(output, separator);
   }
+
+  infoOrder.forEach((provider) => {
+    const entry = infoByProvider[provider];
+    entry.proxy.name = formatInfoName(provider, entry.info);
+    entry.proxy._rsSort = {
+      type: 0,
+      provider: provider,
+      country: -1,
+      base: entry.proxy.name,
+      index: entry.index,
+    };
+    setBlockQuic(entry.proxy);
+    output.push(entry.proxy);
+  });
 
   if (shouldSort) {
     output.sort((a, b) => {

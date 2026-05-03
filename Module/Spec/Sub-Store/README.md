@@ -30,14 +30,14 @@
 
 > https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Module/Spec/Sub-Store/Moore/Node-Rename.js#provider=TAG&flag&one&keep=GPT+NF+IPLC&blockquic=off
 
-该脚本适合放在 Sub-Store 的“脚本操作”里，用于整理机场订阅节点名。它会识别国家/地区、统一输出命名、补国旗、保留倍率或专线标记，并可统一处理 `block-quic`。多订阅合并时会优先使用每个节点自带的订阅展示名称作为前缀，并兼容 `_subDisplayName`、`subDisplayName`、`subscriptionDisplayName`、`provider`、`subName`、`_subName`、`subscriptionName`、`sourceName`、`subscription.name` 等常见字段；只有节点取不到订阅名称时，才使用 `provider=` / `name=` 参数作为兜底。流量、到期、套餐等信息节点会按订阅名提取并排在列表最前面，其余真实节点再按地区排序。整理后的节点名默认由“订阅名称 + 地区 + 保留标记 + 序号”组成，例如：
+该脚本适合放在 Sub-Store 的“脚本操作”里，用于整理机场订阅节点名。它会识别国家/地区、统一输出命名、补国旗、保留倍率或专线标记，并可统一处理 `block-quic`。多订阅合并时会优先使用每个节点自带的订阅展示名称作为前缀，并兼容 `_subDisplayName`、`subDisplayName`、`subscriptionDisplayName`、`provider`、`subName`、`_subName`、`subscriptionName`、`sourceName`、`subscription.name` 等常见字段；只有节点取不到订阅名称时，才使用 `provider=` / `name=` 参数作为兜底。流量、到期、套餐等信息节点会按订阅名聚合成一条摘要并排在列表最前面，其余真实节点再按地区排序。整理后的节点名默认由“订阅名称 + 地区 + 保留标记 + 序号”组成，例如：
 
 ```text
 TAG 🇭🇰 香港 IPLC GPT 01
 TAG 🇯🇵 日本 2x 01
 TAG 🇺🇸 美国 原生 01
-花云 Traffic 137.51 GB 150 GB
-良心-共享 剩余流量 4.13 TB
+花云 (137.51 GB/150 GB / 到期 2026-05-11)
+良心-共享 (剩余 4.13 TB / 到期 长期有效)
 ```
 
 常用模板：

@@ -35,12 +35,9 @@ const input = [
 const output = operator(input);
 const names = output.map((proxy) => proxy.name);
 
-assert(output.length === 13, "official notice node is filtered but traffic info is kept");
-assert(names.slice(0, 4).every((name) => /Traffic|Expire|剩余流量|套餐到期/.test(name)), "traffic and expiry info nodes are placed first");
-assert(names.includes("花云 Traffic 137.51 GB 150 GB"), "huayun traffic info is kept with subscription display name");
-assert(names.includes("花云 Expire 2026-05-11"), "huayun expiry info is kept with subscription display name");
-assert(names.includes("良心-共享 剩余流量 4.13 TB"), "lx traffic info is kept with subscription display name");
-assert(names.includes("良心-共享 套餐到期 长期有效"), "lx expiry info is kept with subscription display name");
+assert(output.length === 11, "official notice node is filtered and traffic info is aggregated");
+assert(names[0] === "花云 (137.51 GB/150 GB / 到期 2026-05-11)", "huayun traffic and expiry are aggregated");
+assert(names[1] === "良心-共享 (剩余 4.13 TB / 到期 长期有效)", "lx traffic and expiry are aggregated");
 assert(names.includes("Bitz 🇭🇰 香港 BGP"), "Bitz node prefers subscription display name");
 assert(names.includes("TAG 🇭🇰 香港 IPLC GPT"), "Chinese Hong Kong node keeps provider, flag, IPLC, and GPT");
 assert(names.includes("TAG 🇭🇰 香港 IPLC NF"), "English Hong Kong node keeps provider, flag, IPLC, and NF");
